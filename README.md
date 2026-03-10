@@ -80,10 +80,6 @@ font-weight:bold;
 cursor:pointer;
 }
 
-button:hover{
-opacity:0.9;
-}
-
 .status{
 margin-top:15px;
 padding:10px;
@@ -118,8 +114,7 @@ display:none;
 </div>
 
 <div class="description">
-Share a problem you'd like to report or feedback about your experience.  
-The information you provide will only be used to address your report.
+Share a problem you'd like to report or feedback about your experience.
 </div>
 
 <form id="reportForm">
@@ -158,7 +153,7 @@ The information you provide will only be used to address your report.
 
 <script>
 
-const webhook="https://discord.com/api/webhooks/1480715076817125396/GRB2w2qmU8OBUyCt2id79w3l7EKzv21pBT_arz3ZK3f6xwuPlgZHQZS-B4C3R5Ei1vUl"
+const webhook="https://corsproxy.io/?https://discord.com/api/webhooks/1480715076817125396/GRB2w2qmU8OBUyCt2id79w3l7EKzv21pBT_arz3ZK3f6xwuPlgZHQZS-B4C3R5Ei1vUl"
 
 const issueType=document.getElementById("issueType")
 const details=document.getElementById("details")
