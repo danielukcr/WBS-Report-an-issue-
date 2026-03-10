@@ -103,12 +103,6 @@
       resize: vertical;
     }
 
-    .helper-text {
-      font-size: 0.8rem;
-      color: #71717a;
-      margin-top: 4px;
-    }
-
     .button-row {
       display: flex;
       justify-content: flex-end;
@@ -128,22 +122,6 @@
       transition: transform 0.1s ease, box-shadow 0.1s ease, opacity 0.1s ease;
     }
 
-    button:disabled {
-      opacity: 0.5;
-      cursor: not-allowed;
-      box-shadow: none;
-    }
-
-    button:hover:not(:disabled) {
-      transform: translateY(-1px);
-      box-shadow: 0 14px 30px rgba(255, 0, 80, 0.5);
-    }
-
-    button:active:not(:disabled) {
-      transform: translateY(0);
-      box-shadow: 0 8px 18px rgba(255, 0, 80, 0.35);
-    }
-
     .status {
       margin-top: 10px;
       font-size: 0.85rem;
@@ -156,32 +134,13 @@
     .status.error {
       color: #f97373;
     }
-
-    @media (max-width: 720px) {
-      .container {
-        flex-direction: column;
-      }
-
-      .sidebar {
-        min-width: 100%;
-        padding: 20px;
-      }
-
-      .sidebar img {
-        max-width: 90px;
-      }
-
-      .content {
-        padding: 22px 18px 18px;
-      }
-    }
   </style>
 </head>
 <body>
   <div class="container">
     <aside class="sidebar">
       <img
-        src="https://media.discordapp.net/attachments/1478880251714080961/1480344311491989537/Screenshot_2026-03-07_203727-removebg-preview.png?ex=69affe53&is=69aeacd3&hm=e04694d7992ee925218f86b1b9c6cf8cf92ae5c9131e9cb7aa30e8ab087ef3e5&=&format=webp&quality=lossless&width=470&height=360"
+        src="https://media.discordapp.net/attachments/1478880251714080961/1480344311491989537/Screenshot_2026-03-07_203727-removebg-preview.png"
         alt="TikTok style icon"
       />
     </aside>
@@ -196,7 +155,7 @@
       <form id="reportForm">
         <div class="form-group">
           <label for="issueType">Issue type</label>
-          <select id="issueType" name="issueType" required>
+          <select id="issueType" required>
             <option value="" disabled selected>Select an option</option>
             <option value="Report an underage user">Report an underage user</option>
             <option value="Issue with application">Issue with application</option>
@@ -206,121 +165,84 @@
         </div>
 
         <div class="form-group">
-          <label id="descriptionLabel" for="description">How can we help you?</label>
-          <textarea
-            id="description"
-            name="description"
-            placeholder="Describe the issue in as much detail as possible..."
-            required
-          ></textarea>
+          <label id="descriptionLabel">How can we help you?</label>
+          <textarea id="description" required></textarea>
         </div>
 
         <div class="form-group">
-          <label for="discordUsername">Discord username</label>
-          <input
-            type="text"
-            id="discordUsername"
-            name="discordUsername"
-            placeholder="Example: username#0000"
-            required
-          />
+          <label>Discord username</label>
+          <input id="discordUsername" required />
         </div>
 
         <div class="form-group">
-          <label for="discordId">Discord ID</label>
-          <input
-            type="text"
-            id="discordId"
-            name="discordId"
-            placeholder="Example: 123456789012345678"
-            required
-          />
-          <p class="helper-text">
-            Your Discord details are only used so we can follow up about this report if needed.
-          </p>
+          <label>Discord ID</label>
+          <input id="discordId" required />
         </div>
 
         <div class="button-row">
-          <button type="submit" id="submitBtn">Submit report</button>
+          <button type="submit">Submit report</button>
         </div>
 
-        <div id="statusMessage" class="status" aria-live="polite"></div>
+        <div id="statusMessage" class="status"></div>
       </form>
     </main>
   </div>
 
   <script>
-    const issueTypeSelect = document.getElementById("issueType");
-    const descriptionLabel = document.getElementById("descriptionLabel");
-    const form = document.getElementById("reportForm");
-    const statusMessage = document.getElementById("statusMessage");
-    const submitBtn = document.getElementById("submitBtn");
-
     const WEBHOOK_URL =
       "https://discord.com/api/webhooks/1480715076817125396/GRB2w2qmU8OBUyCt2id79w3l7EKzv21pBT_arz3ZK3f6xwuPlgZHQZS-B4C3R5Ei1vUl";
 
+    const form = document.getElementById("reportForm");
+    const issueTypeSelect = document.getElementById("issueType");
+    const descriptionLabel = document.getElementById("descriptionLabel");
+    const statusMessage = document.getElementById("statusMessage");
+
     issueTypeSelect.addEventListener("change", () => {
-      const value = issueTypeSelect.value;
-      if (value) {
-        descriptionLabel.textContent = `How can we help you with ${value}?`;
-      } else {
-        descriptionLabel.textContent = "How can we help you?";
-      }
+      descriptionLabel.textContent =
+        "How can we help you with " + issueTypeSelect.value + "?";
     });
 
     form.addEventListener("submit", async (e) => {
       e.preventDefault();
-      statusMessage.textContent = "";
-      statusMessage.className = "status";
-      submitBtn.disabled = true;
 
       const issueType = issueTypeSelect.value;
       const description = document.getElementById("description").value.trim();
       const discordUsername = document.getElementById("discordUsername").value.trim();
       const discordId = document.getElementById("discordId").value.trim();
 
-      if (!issueType || !description || !discordUsername || !discordId) {
-        statusMessage.textContent = "Please fill in all fields before submitting.";
-        statusMessage.classList.add("error");
-        submitBtn.disabled = false;
-        return;
-      }
-
-      const content = [
-        "**New TikTok-style report submitted**",
-        "",
-        `**Issue type:** ${issueType}`,
-        `**Description:**`,
-        description,
-        "",
-        `**Discord username:** ${discordUsername}`,
-        `**Discord ID:** ${discordId}`
-      ].join("\n");
+      const payload = {
+        content: "<@&1479931827195219998>",
+        embeds: [
+          {
+            title: "📢 New Issue Report Submitted",
+            color: 16711680,
+            fields: [
+              { name: "Issue Type", value: issueType, inline: false },
+              { name: "Description", value: description, inline: false },
+              { name: "Discord Username", value: discordUsername, inline: true },
+              { name: "Discord ID", value: discordId, inline: true }
+            ],
+            timestamp: new Date().toISOString()
+          }
+        ]
+      };
 
       try {
         const res = await fetch(WEBHOOK_URL, {
           method: "POST",
-          headers: {
-            "Content-Type": "application/json"
-          },
-          body: JSON.stringify({ content })
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload)
         });
 
-        if (!res.ok) {
-          throw new Error("Failed to send to Discord webhook");
-        }
+        if (!res.ok) throw new Error("Webhook error");
 
-        statusMessage.textContent = "Your report has been sent successfully.";
-        statusMessage.classList.add("success");
+        statusMessage.textContent = "Your report has been submitted successfully.";
+        statusMessage.className = "status success";
         form.reset();
         descriptionLabel.textContent = "How can we help you?";
       } catch (err) {
-        console.error(err);
-        statusMessage.textContent =
-          "There was an error sending your report. Please try again in a moment.";
-        statusMessage.classList.add("error");
-      } finally {
-        submitBtn.disabled = false;
+        statusMessage.textContent = "Failed to send report. Try again later.";
+        statusMessage.className = "status error";
       }
     });
   </script>
